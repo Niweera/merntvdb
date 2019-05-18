@@ -16,7 +16,7 @@ const ItemSchema = new Schema({
     required: true
   },
   place: {
-    type: Array,
+    type: [String],
     required: true
   },
   remarks: {

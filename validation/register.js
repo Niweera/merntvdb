@@ -25,6 +25,9 @@ module.exports = function validateRegisterInput(data) {
   if (Validator.isEmpty(data.link)) {
     errors.link = 'Link field is required';
   }
+  if (!Validator.isURL(data.link)) {
+    errors.linkerror = 'Link field is not valid';
+  }
 
 
   return {
