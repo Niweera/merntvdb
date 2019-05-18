@@ -9,6 +9,7 @@
 
   <script>
     var myObj, x;
+    var bigArray = [];
     myObj = {
       "01laK7fYIFPbpGZSYmdO": {
     "showtype": "Break",
@@ -239,7 +240,7 @@
     "tvid": 25,
     "link": "https://www.google.com/search?q=Atlantis TV Series",
     "showtype": "Completed",
-    "remarks": "W/ Blacksails S01E01-E04\r\n",
+    "remarks": "W/ Blacksails S01E01-E04",
     "tvname": "Atlantis",
     "places": ["b2 S01 S01", "p S02 S02"],
     "__collections__": {}
@@ -452,7 +453,7 @@
     "__collections__": {}
   },
   "9JQJgc0TKbEJdVzfiVjk": {
-    "remarks": "W/ Blacksails S01E01-E04\r\n",
+    "remarks": "W/ Blacksails S01E01-E04",
     "tvname": "Atlantis",
     "places": ["p S02 S02"],
     "tvid": 25,
@@ -2684,12 +2685,54 @@
     "__collections__": {}
   }
     };
+
+    myObj2 = {
+      "01laK7fYIFPbpGZSYmdO": {
+    "showtype": "Break",
+    "remarks": "",
+    "tvname": "Arrow",
+    "places": ["p S05 S05"],
+    "tvid": 111,
+    "link": "https://www.google.com/search?q=Arrow  TV Series",
+    "__collections__": {}
+  },
+  "03famFHUNAPe4WI940Mp": {
+    "tvid": 240,
+    "link": "https://en.wikipedia.org/wiki/Cloak_%26_Dagger_(TV_series)",
+    "showtype": "Break",
+    "remarks": "",
+    "tvname": "Marvel's Cloak & Dagger",
+    "places": ["l S01 S01"],
+    "__collections__": {}
+  },
+  "0AVFXm1BAOSWxwGyukiZ": {
+    "remarks": "",
+    "tvname": "Teenage Mutant Ninja Turtles",
+    "places": ["p S01 S04"],
+    "tvid": 183,
+    "link": "https://www.google.com/search?q=Teenage Mutant Ninja Turtles TV Series",
+    "showtype": "Completed",
+    "__collections__": {}
+  }
+  };
+  var sortArray = [];
     for (x in myObj) {
       var blazes = [];
       for (y in myObj[x]["places"]) {
         blazes.push(`"${myObj[x]["places"][y]}"`);
       }
-      document.getElementById("demo").innerHTML += `{"tvid": ${myObj[x]["tvid"]},"tvname": "${myObj[x]["tvname"]}","showtype": "${myObj[x]["showtype"]}","place": [${blazes}],"remarks": "${myObj[x]["remarks"]}","link": "${myObj[x]["link"]}"}<br>`;
+      var data = `{"id": ${myObj[x]["tvid"]},"tvname": "${myObj[x]["tvname"]}","showtype": "${myObj[x]["showtype"]}","place": [${blazes}],"remarks": "${myObj[x]["remarks"]}","link": "${myObj[x]["link"]}"}`;
+      
+      bigArray.push(JSON.parse(data));
+    }
+    
+    sortArray = bigArray.sort(function(a, b){
+      return a.id - b.id;
+    });
+
+    sortArray.forEach(myFunction);
+    function myFunction(value, index, array) {
+      document.getElementById("demo").innerHTML += JSON.stringify(value) + '<br>'; 
     }
   </script>
 
