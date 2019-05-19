@@ -15,7 +15,7 @@ const Item = require('../../models/Item');
 router.get('/test', passport.authenticate('jwt', { session: false }), (req, res) => res.json({ msg: 'Items Works' }));
 
 // @route   POST api/items/add
-// @desc    Insert item or update when necessary
+// @desc    Insert new item 
 // @access  Prtected
 router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
 
@@ -45,13 +45,9 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
   
   Item.findOne({ tvid: req.body.tvid }).then(item => {
     if (item) {
-      //update the existing item
-      Item.findOneAndUpdate(
-        { tvid: req.body.tvid },
-        { $set: newItem },
-        { new: true}
-      ).then(item => res.json(item))
-      .catch(err => console.log(err));
+      //throw an error
+      errors.itemexist = 'There is a TV Series associated with this TVID';
+      res.status(404).json(errors);
       
     } else {
       //create new item
@@ -86,26 +82,57 @@ router.get('/id/:id', passport.authenticate('jwt', { session: false }), (req, re
     );
 });
 
-// @route   GET api/items/tvid/:tvid
-// @desc    Get items by TVID for editing
+// @route   POST api/items/id/:id/edit
+// @desc    POST items by ID for editing alias UPDATE
 // @access  Private
 
-router.get('/tvid/:tvid', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const errors = {};
+router.post('/id/:id/edit', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+  const placeArray = [];
+  
+  // Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
 
-  Item.findOne({ tvid: req.params.tvid })
-    .then(item => {
-      if (!item) {
-        errors.noitem = 'There is no TV Series associated with this TVID';
-        res.status(404).json(errors);
-      }
+  if (req.body.remarks === undefined || req.body.remarks === null){
+    req.body.remarks = "";
+  }
 
-      res.json(item);
+  if (typeof req.body.place !== 'undefined'){
+    req.body.place = req.body.place.split(',');
+    req.body.place.forEach(myFunction);
+    function myFunction(value, index, array) {
+      placeArray.push(value.trim()); 
+    }
+  }
 
-    })
-    .catch(err =>
-      res.status(404).json({ item: 'There is no TV Series associated with this TVID' })
-    );
+  const newItem = {};
+
+  if(req.body.tvid) newItem.tvid = req.body.tvid;
+  if(req.body.tvname) newItem.tvname = req.body.tvname;
+  if(req.body.showtype) newItem.showtype = req.body.showtype;
+  if(placeArray) newItem.place = placeArray;
+  if(req.body.remarks) newItem.remarks = req.body.remarks;
+  if(req.body.link) newItem.link = req.body.link;
+  
+  Item.findOne({ _id: req.params.id }).then(item => {
+    if (item) {
+      //update the existing item
+      Item.findOneAndUpdate(
+        { tvid: req.body.tvid },
+        { $set: newItem },
+        { new: true}
+      ).then(item => res.json(item))
+      .catch(err => console.log(err));
+      
+    } else {
+      //throw an error
+      errors.noitem = 'There is no TV Series associated with this ID';
+      res.status(404).json(errors);
+      
+    }
+  });
 });
 
 // @route   GET api/items/all
