@@ -29,6 +29,7 @@ router.get('/test', passport.authenticate('jwt', { session: false }), (req, res)
 router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
 
   const { errors, isValid } = validateRegisterInput(req.body);
+  const placeArray = [];
   
   // Check Validation
   if (!isValid) {
@@ -41,6 +42,10 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
 
   if (typeof req.body.place !== 'undefined'){
     req.body.place = req.body.place.split(',');
+    req.body.place.forEach(myFunction);
+    function myFunction(value, index, array) {
+      placeArray.push(value.trim()); 
+    }
   }
 
   const newItem = {};
@@ -48,7 +53,7 @@ router.post('/add', passport.authenticate('jwt', { session: false }), (req, res)
   if(req.body.tvid) newItem.tvid = req.body.tvid;
   if(req.body.tvname) newItem.tvname = req.body.tvname;
   if(req.body.showtype) newItem.showtype = req.body.showtype;
-  if(req.body.place) newItem.place = req.body.place;
+  if(placeArray) newItem.place = placeArray;
   if(req.body.remarks) newItem.remarks = req.body.remarks;
   if(req.body.link) newItem.link = req.body.link;
   
