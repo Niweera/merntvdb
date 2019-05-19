@@ -151,6 +151,7 @@ router.get('/all', (req, res) => {
   const errors = {};
 
   Item.find()
+    .sort({tvid:1})
     .then(item => {
       if (!item) {
         errors.noitem = 'There are no TV Series in the Database';
