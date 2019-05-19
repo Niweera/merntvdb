@@ -3,6 +3,15 @@ const router = express.Router();
 const passport = require('passport');
 const mongoose = require('mongoose');
 
+/*main routes includes
+
+GET api/items/all           GET all items
+GET api/items/id/:id        GET item by ID
+POST api/items/add          Create a new item
+POST api/items/id/:id/edit  Update an item by ID
+
+main routes includes*/
+
 // Load Input Validation
 const validateRegisterInput = require('../../validation/register');
 
