@@ -26,8 +26,8 @@ router.get('/test', passport.authenticate('jwt', { session: false }), (req, res)
 // @route   POST api/items/add
 // @desc    Insert new item 
 // @access  Prtected
-// router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
-router.post('/add', (req, res) => {
+router.post('/add', passport.authenticate('jwt', { session: false }), (req, res) => {
+  // router.post('/add', (req, res) => {
 
   const { errors, isValid } = validateRegisterInput(req.body);
   const placeArray = [];

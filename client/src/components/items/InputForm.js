@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import classnames from 'classnames';
-import axios from 'axios';
+import { withRouter } from 'react-router-dom';
 // import { compose } from 'redux';
-// import { connect } from 'react-redux';
-// import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addItem } from '../../actions/authActions';
+import PropTypes from 'prop-types';
 
 class InputForm extends Component {
   constructor() {
@@ -20,6 +21,18 @@ class InputForm extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push('/login');
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
   }
 
   getTvid() {
@@ -47,26 +60,13 @@ class InputForm extends Component {
       link: link
     };
 
-    axios
-      .post('/api/items/add', newItem)
-      .then(res => {
-        console.log(res.data)
-        this.setState({
-          tvid: '',
-          tvname: '',
-          showtype: '',
-          place: '',
-          link: '',
-          remarks: '',
-          errors: {}
-        });
-      })
-      .catch(err => this.setState({ errors: err.response.data }));
+    this.props.addItem(newItem, this.props.history);
 
   }
 
   render() {
     const { tvid, tvname, showtype, place, link, remarks, errors } = this.state;
+
     return (
       <div className="container">
         <div className="container mt-2">
@@ -127,5 +127,15 @@ class InputForm extends Component {
   }
 }
 
+InputForm.propTypes = {
+  addItem: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
 
-export default InputForm;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(mapStateToProps, { addItem })(withRouter(InputForm));
