@@ -57,6 +57,14 @@ class EditForm extends Component {
       this.setState({ errors: nextProps.errors });
     }
 
+    if (
+      nextProps.item.item === null &&
+      this.props.item.loading &&
+      this.props.item.noredirect
+    ) {
+      this.props.history.push("/");
+    }
+
     if (nextProps.item.item) {
       const item = nextProps.item.item;
 

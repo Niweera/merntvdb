@@ -5,7 +5,8 @@ import {
   GET_LAST_TVID,
   CLEAR_DATA,
   CLEAR_ITEM,
-  SEND_SUCCESS
+  SEND_SUCCESS,
+  REDIRECT_HOLD
 } from "../actions/types";
 
 const initialState = {
@@ -13,7 +14,8 @@ const initialState = {
   items: null,
   lastTvid: null,
   loading: false,
-  success: null
+  success: null,
+  noredirect: true
 };
 
 export default function(state = initialState, action) {
@@ -62,6 +64,11 @@ export default function(state = initialState, action) {
         lastTvid: null,
         loading: false,
         success: null
+      };
+    case REDIRECT_HOLD:
+      return {
+        ...state,
+        noredirect: false
       };
     default:
       return state;

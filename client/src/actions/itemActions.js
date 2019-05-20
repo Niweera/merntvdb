@@ -7,7 +7,8 @@ import {
   CLEAR_DATA,
   CLEAR_ITEM,
   CLEAR_ERRORS,
-  SEND_SUCCESS
+  SEND_SUCCESS,
+  REDIRECT_HOLD
 } from "./types";
 import axios from "axios";
 
@@ -35,6 +36,7 @@ export const updateItem = itemData => dispatch => {
   axios
     .post(`/api/items/id/${id}/edit`, itemData)
     .then(res => {
+      dispatch(noRedirect());
       dispatch(clearItem());
       dispatch(clearErrors());
       dispatch(getItemById(id));
@@ -137,5 +139,12 @@ export const clearItem = () => {
 export const clearErrors = () => {
   return {
     type: CLEAR_ERRORS
+  };
+};
+
+// Hold redirection when item == null & loading == true
+export const noRedirect = () => {
+  return {
+    type: REDIRECT_HOLD
   };
 };

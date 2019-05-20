@@ -13,3 +13,5 @@ export const GET_LAST_TVID = "GET_LAST_TVID";
 export const CLEAR_DATA = "CLEAR_DATA";
 export const CLEAR_ITEM = "CLEAR_ITEM";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
+
+export const REDIRECT_HOLD = "REDIRECT_HOLD";
