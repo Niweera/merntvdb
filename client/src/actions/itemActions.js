@@ -6,7 +6,8 @@ import {
   GET_LAST_TVID,
   CLEAR_DATA,
   CLEAR_ITEM,
-  CLEAR_ERRORS
+  CLEAR_ERRORS,
+  SEND_SUCCESS
 } from "./types";
 import axios from "axios";
 
@@ -25,6 +26,33 @@ export const addItem = (itemData, history) => dispatch => {
         payload: err.response.data
       })
     );
+};
+
+// Update a TV Series Record
+
+export const updateItem = itemData => dispatch => {
+  const id = itemData.id;
+  axios
+    .post(`/api/items/id/${id}/edit`, itemData)
+    .then(res => {
+      dispatch(clearItem());
+      dispatch(clearErrors());
+      dispatch(getItemById(id));
+      dispatch({
+        type: SEND_SUCCESS,
+        payload: "Successfully Updated"
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: SEND_SUCCESS,
+        payload: null
+      });
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      });
+    });
 };
 
 // Get TV Series item by id

@@ -4,14 +4,16 @@ import {
   ITEM_LOADING,
   GET_LAST_TVID,
   CLEAR_DATA,
-  CLEAR_ITEM
+  CLEAR_ITEM,
+  SEND_SUCCESS
 } from "../actions/types";
 
 const initialState = {
   item: null,
   items: null,
   lastTvid: null,
-  loading: false
+  loading: false,
+  success: null
 };
 
 export default function(state = initialState, action) {
@@ -39,20 +41,27 @@ export default function(state = initialState, action) {
         lastTvid: action.payload,
         loading: false
       };
+    case SEND_SUCCESS:
+      return {
+        ...state,
+        success: action.payload,
+        loading: false
+      };
     case CLEAR_DATA:
       return {
         ...state,
         item: null,
-        items: null,
         lastTvid: null,
-        loading: false
+        loading: false,
+        success: null
       };
     case CLEAR_ITEM:
       return {
         ...state,
         item: null,
         lastTvid: null,
-        loading: false
+        loading: false,
+        success: null
       };
     default:
       return state;

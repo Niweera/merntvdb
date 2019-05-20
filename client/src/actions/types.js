@@ -1,5 +1,7 @@
 export const GET_ERRORS = "GET_ERRORS";
 
+export const SEND_SUCCESS = "SEND_SUCCESS";
+
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 
 export const GET_ITEM = "GET_ITEM";

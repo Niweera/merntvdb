@@ -6,6 +6,8 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { clearData } from "./actions/itemActions";
 import { Provider } from "react-redux";
 
+import PrivateRoute from "./components/common/PrivateRoute";
+
 import "./App.css";
 
 import Header from "./components/layout/Header";
@@ -51,8 +53,8 @@ function App() {
           <div className="container">
             <Switch>
               <Route exact path="/" component={Dashboard} />
-              <Route exact path="/add" component={InputForm} />
-              <Route exact path="/edit/:id" component={EditForm} />
+              <PrivateRoute exact path="/add" component={InputForm} />
+              <PrivateRoute exact path="/edit/:id" component={EditForm} />
               <Route exact path="/help" component={Help} />
               <Route exact path="/dmca" component={Dmca} />
               <Route exact path="/seenotes" component={SeeNotes} />

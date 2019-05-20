@@ -29,9 +29,6 @@ class InputForm extends Component {
 
   componentDidMount() {
     this.props.getLastTvid();
-    if (!this.props.auth.isAuthenticated) {
-      this.props.history.push("/login");
-    }
   }
 
   componentWillUnmount() {
@@ -166,6 +163,9 @@ class InputForm extends Component {
                   value={place}
                   onChange={this.onChange}
                 />
+                <small className="form-text text-white">
+                  [Enter Comma Seperated] Ex: l S01 S02, p S03 S03
+                </small>
                 {errors.place && (
                   <div className="invalid-feedback">{errors.place}</div>
                 )}

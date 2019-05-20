@@ -39,6 +39,7 @@ router.post(
 
     const { errors, isValid } = validateRegisterInput(req.body);
     const placeArray = [];
+    let filteredPlaceArray = [];
 
     // Check Validation
     if (!isValid) {
@@ -51,6 +52,9 @@ router.post(
       function myFunction(value, index, array) {
         placeArray.push(value.trim());
       }
+      filteredPlaceArray = placeArray.filter(function(el) {
+        return el != "";
+      });
     }
 
     const newItem = {};
@@ -58,7 +62,7 @@ router.post(
     if (req.body.tvid) newItem.tvid = req.body.tvid;
     if (req.body.tvname) newItem.tvname = req.body.tvname;
     if (req.body.showtype) newItem.showtype = req.body.showtype;
-    if (placeArray) newItem.place = placeArray;
+    if (filteredPlaceArray) newItem.place = filteredPlaceArray;
     if (req.body.remarks) {
       newItem.remarks = req.body.remarks;
     } else {
@@ -111,14 +115,11 @@ router.post(
   (req, res) => {
     const { errors, isValid } = validateRegisterInput(req.body);
     const placeArray = [];
+    let filteredPlaceArray = [];
 
     // Check Validation
     if (!isValid) {
       return res.status(400).json(errors);
-    }
-
-    if (req.body.remarks === undefined || req.body.remarks === null) {
-      req.body.remarks = "";
     }
 
     if (typeof req.body.place !== "undefined") {
@@ -127,6 +128,9 @@ router.post(
       function myFunction(value, index, array) {
         placeArray.push(value.trim());
       }
+      filteredPlaceArray = placeArray.filter(function(el) {
+        return el != "";
+      });
     }
 
     const newItem = {};
@@ -134,7 +138,7 @@ router.post(
     if (req.body.tvid) newItem.tvid = req.body.tvid;
     if (req.body.tvname) newItem.tvname = req.body.tvname;
     if (req.body.showtype) newItem.showtype = req.body.showtype;
-    if (placeArray) newItem.place = placeArray;
+    if (filteredPlaceArray) newItem.place = filteredPlaceArray;
     if (req.body.remarks) {
       newItem.remarks = req.body.remarks;
     } else {

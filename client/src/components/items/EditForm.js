@@ -4,43 +4,93 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import Spinner from "../layout/Spinner";
 import PropTypes from "prop-types";
-import { getItemById, clearData, clearErrors } from "../../actions/itemActions";
+import {
+  getItemById,
+  clearData,
+  clearErrors,
+  updateItem
+} from "../../actions/itemActions";
 
 class EditForm extends Component {
   constructor() {
     super();
     this.state = {
-      errors: {}
+      tvid: "",
+      tvname: "",
+      showtype: "",
+      place: "",
+      link: "",
+      remarks: "",
+      errors: {},
+      success: ""
     };
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+
+    const { tvid, tvname, place, showtype, remarks, link } = this.state;
+    const id = this.props.match.params.id;
+
+    const editItem = {
+      id: id,
+      tvid: String(tvid),
+      tvname: tvname,
+      place: place,
+      showtype: showtype,
+      remarks: remarks,
+      link: link
+    };
+
+    this.props.updateItem(editItem);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
+
+    if (nextProps.item.item) {
+      const item = nextProps.item.item;
+
+      // Bring place array back to CSV
+      const placeArray = item.place.join(", ");
+
+      // Set component fields state
+      const { tvid, tvname, showtype, link, remarks } = item;
+      this.setState({
+        tvid: tvid,
+        tvname: tvname,
+        place: placeArray,
+        showtype: showtype,
+        remarks: remarks,
+        link: link
+      });
+    }
   }
 
   componentWillUnmount() {
     this.props.clearErrors();
+    this.props.clearData();
   }
 
   componentDidMount() {
     this.props.getItemById(this.props.match.params.id);
-    if (!this.props.auth.isAuthenticated) {
-      this.props.history.push("/login");
-    }
   }
-
-  onSubmit = e => {
-    e.preventDefault();
-  };
 
   render() {
     const { errors } = this.state;
-    const { item, loading } = this.props.item;
+    const { item, success } = this.props.item;
 
-    if (item !== null && !loading) {
-      const { tvid, tvname, showtype, link, place, remarks } = item;
+    if (item !== null) {
+      const { tvid, tvname, showtype, link, place, remarks } = this.state;
       return (
         <div className="container">
           <div className="container mt-2">
@@ -62,7 +112,7 @@ class EditForm extends Component {
                     })}
                     placeholder="TVID"
                     name="tvid"
-                    defaultValue={tvid}
+                    value={tvid}
                     disabled
                   />
                   {errors.tvid && (
@@ -77,10 +127,8 @@ class EditForm extends Component {
                     })}
                     placeholder="TVName"
                     name="tvname"
-                    ref={input => {
-                      this.tvname = input;
-                    }}
-                    defaultValue={tvname}
+                    value={tvname}
+                    onChange={this.onChange}
                   />
                   {errors.tvname && (
                     <div className="invalid-feedback">{errors.tvname}</div>
@@ -92,10 +140,8 @@ class EditForm extends Component {
                       "is-invalid": errors.showtype
                     })}
                     name="showtype"
-                    ref={select => {
-                      this.showtype = select;
-                    }}
-                    defaultValue={showtype}
+                    value={showtype}
+                    onChange={this.onChange}
                   >
                     <option value="" disabled>
                       Select ShowType
@@ -118,10 +164,8 @@ class EditForm extends Component {
                     })}
                     placeholder="Wikipedia Link"
                     name="link"
-                    ref={input => {
-                      this.link = input;
-                    }}
-                    defaultValue={link}
+                    value={link}
+                    onChange={this.onChange}
                   />
                   {errors.link && (
                     <div className="invalid-feedback">{errors.link}</div>
@@ -133,10 +177,7 @@ class EditForm extends Component {
                     className="form-control"
                     placeholder="Remarks"
                     name="remarks"
-                    ref={input => {
-                      this.remarks = input;
-                    }}
-                    defaultValue={remarks}
+                    value={remarks}
                     onChange={this.onChange}
                   />
                 </div>
@@ -150,11 +191,12 @@ class EditForm extends Component {
                     })}
                     placeholder="Place [Enter Comma Seperated] Ex: l S01 S02, p S03 S03"
                     name="place"
-                    ref={input => {
-                      this.place = input;
-                    }}
-                    defaultValue={place}
+                    value={place}
+                    onChange={this.onChange}
                   />
+                  <small className="form-text text-white">
+                    [Enter Comma Seperated] Ex: l S01 S02, p S03 S03
+                  </small>
                   {errors.place && (
                     <div className="invalid-feedback">{errors.place}</div>
                   )}
@@ -173,6 +215,11 @@ class EditForm extends Component {
               </div>
             </form>
           </div>
+          {success && (
+            <div className="alert alert-success text-center" role="alert">
+              {success}
+            </div>
+          )}
         </div>
       );
     } else {
@@ -192,6 +239,7 @@ class EditForm extends Component {
 
 EditForm.propTypes = {
   getItemById: PropTypes.func.isRequired,
+  updateItem: PropTypes.func.isRequired,
   clearData: PropTypes.func.isRequired,
   clearErrors: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
@@ -207,5 +255,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getItemById, clearData, clearErrors }
+  { getItemById, clearData, clearErrors, updateItem }
 )(withRouter(EditForm));

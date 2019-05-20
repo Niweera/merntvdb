@@ -15,8 +15,8 @@ class Items extends Component {
   }
 
   render() {
-    const { items, loading } = this.props.item;
-    if (items !== null && !loading) {
+    const { items } = this.props.item;
+    if (items !== null) {
       return (
         <div className="container mt-3" id="specialDiv">
           <div className="row">
